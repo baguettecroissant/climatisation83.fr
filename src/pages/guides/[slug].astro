@@ -1,0 +1,124 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import StepsForm from '../../components/StepsForm.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides');
+  return guides.map((guide) => ({
+    params: { slug: guide.id },
+    props: { guide }
+  }));
+}
+
+import { render } from 'astro:content';
+
+const { guide } = Astro.props;
+const { Content } = await render(guide);
+---
+
+<Layout title={`${guide.data.title} | Climatisation Var`} description={guide.data.description}>
+  <Breadcrumb items={[
+    { label: "Guides", url: "/guides/" },
+    { label: guide.data.title }
+  ]} />
+
+  <section style="padding: 60px 0 100px; background: white;">
+    <div class="container two-column-layout" style="align-items: flex-start;">
+      
+      <!-- Article Content -->
+      <article style="font-size: 16px; line-height: 1.8; color: var(--text);">
+        <header style="margin-bottom: 30px; border-bottom: 2px solid var(--border-color); padding-bottom: 25px;">
+          <span style="font-size: 13px; color: var(--text-muted); font-family: var(--font-mono); display: block; margin-bottom: 10px;">
+            🗓️ Publié le {new Date(guide.data.pubDate).toLocaleDateString('fr-FR')} | Dossier Climatisation Var
+          </span>
+          <h1 style="color: var(--primary); font-size: 32px; font-weight: 700; margin-bottom: 15px;">
+            {guide.data.title}
+          </h1>
+          <p style="font-size: 18px; color: var(--text-muted); line-height: 1.6; font-style: italic;">
+            {guide.data.description}
+          </p>
+        </header>
+
+        <!-- Markdown rendered content -->
+        <div class="markdown-body">
+          <Content />
+        </div>
+      </article>
+
+      <!-- Sidebar with Lead Form -->
+      <aside style="position: sticky; top: 100px;">
+        <div style="background: var(--primary-light); border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 30px; text-align: center; box-shadow: var(--shadow-sm);">
+          <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 20px; font-weight: 700;">Votre climatisation au meilleur prix</h3>
+          <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 25px;">
+            Obtenez jusqu'à 3 devis comparatifs gratuits de frigoristes certifiés RGE du Var (83).
+          </p>
+          <StepsForm />
+        </div>
+      </aside>
+
+    </div>
+  </section>
+</Layout>
+
+<style is:global>
+  /* Markdown styling inside article */
+  .markdown-body h2 {
+    color: var(--primary);
+    font-size: 24px;
+    font-weight: 700;
+    margin: 40px 0 15px;
+  }
+  .markdown-body h3 {
+    color: var(--primary);
+    font-size: 20px;
+    font-weight: 700;
+    margin: 30px 0 12px;
+  }
+  .markdown-body p {
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+  .markdown-body ul, .markdown-body ol {
+    margin-bottom: 25px;
+    margin-left: 20px;
+  }
+  .markdown-body li {
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 30px 0;
+    font-size: 15px;
+  }
+  .markdown-body th {
+    background: var(--primary);
+    color: white;
+    padding: 12px;
+    font-weight: 700;
+  }
+  .markdown-body td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-muted);
+  }
+  .markdown-body tr:nth-child(even) {
+    background: var(--primary-light);
+  }
+  .markdown-body strong {
+    color: var(--text);
+  }
+  .markdown-body img {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    border-radius: 12px;
+    margin: 25px 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: block;
+  }
+</style>
+

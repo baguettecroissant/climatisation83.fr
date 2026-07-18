@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+import StepsForm from '../components/StepsForm.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
+const title = "Demande de Devis Climatisation Réversible — Var (83) | RGE";
+const description = "Estimez rapidement le coût de votre climatisation réversible (PAC air-air) ou de votre pompe à chaleur dans le 83. Recevez 3 devis d'installateurs locaux.";
+
+const breadcrumbItems = [
+  { label: "Accueil", url: "/" },
+  { label: "Demande de Devis Climatisation" }
+];
+---
+
+<Layout title={title} description={description}>
+  <Breadcrumb items={breadcrumbItems} />
+
+  <section style="padding: 50px 0 80px; background: linear-gradient(135deg, rgba(30,58,95,0.04) 0%, rgba(225,29,72,0.02) 100%);">
+    <div class="container" style="max-width: 800px;">
+      <div style="text-align: center; margin-bottom: 40px;">
+        <span class="badge-pill" style="margin-bottom: 15px; background:var(--secondary); color:white; border:none;">⏱️ Simulation gratuite en 2 min</span>
+        <h1 style="font-family: var(--font-heading); font-size: 36px; font-weight: 700; color: var(--primary); margin-bottom: 15px;">
+          Votre Devis Climatisation dans le Var
+        </h1>
+        <p style="font-size: 18px; color: var(--text-muted); line-height: 1.6;">
+          Remplissez notre configurateur intelligent pour obtenir une estimation de budget. Nous transmettons votre demande uniquement à des climaticiens certifiés RGE Qualipac qualifiés du 83.
+        </p>
+      </div>
+
+      <div>
+        <StepsForm />
+      </div>
+
+      <div class="grid-3" style="margin-top: 60px; text-align: center; gap: 20px;">
+        <div style="background: white; border: 2px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+          <div style="font-size: 32px; margin-bottom: 10px;">📋</div>
+          <h3 style="font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">1. Décrivez votre projet</h3>
+          <p style="font-size: 15px; color: var(--text-muted); line-height: 1.5; margin: 0;">Sélectionnez le nombre de pièces, le chauffage actuel, et le délai de réalisation souhaité.</p>
+        </div>
+        
+        <div style="background: white; border: 2px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+          <div style="font-size: 32px; margin-bottom: 10px;">📞</div>
+          <h3 style="font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">2. Validation locale</h3>
+          <p style="font-size: 15px; color: var(--text-muted); line-height: 1.5; margin: 0;">Un conseiller spécialisé valide votre dossier technique par téléphone sous 24h pour estimer vos aides (CEE, TVA).</p>
+        </div>
+
+        <div style="background: white; border: 2px solid var(--border-color); padding: 25px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+          <div style="font-size: 32px; margin-bottom: 10px;">🤝</div>
+          <h3 style="font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">3. Recevez 3 Offres</h3>
+          <p style="font-size: 15px; color: var(--text-muted); line-height: 1.5; margin: 0;">Comparez gratuitement et sans engagement les devis d'artisans frigoristes RGE agréés du Var.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

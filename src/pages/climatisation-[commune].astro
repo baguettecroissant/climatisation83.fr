@@ -1,0 +1,306 @@
+---
+import Layout from '../layouts/Layout.astro';
+import StepsForm from '../components/StepsForm.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import communes from '../data/communes.json';
+
+export async function getStaticPaths() {
+  const data = communes;
+  return data.map((commune) => {
+    const lat1 = commune.coordinates?.lat ? commune.coordinates.lat : 43.1242;
+    const lon1 = commune.coordinates?.lon ? commune.coordinates.lon : 5.9280;
+    
+    // Find 5 closest communes
+    const nearby = data
+      .filter((other) => other.slug !== commune.slug)
+      .map((other) => {
+        const lat2 = other.coordinates?.lat ? other.coordinates.lat : 43.1242;
+        const lon2 = other.coordinates?.lon ? other.coordinates.lon : 5.9280;
+        const d = Math.sqrt(Math.pow(lat1 - lat2, 2) + Math.pow(lon1 - lon2, 2));
+        return { nom: other.nom, slug: other.slug, codePostal: other.codePostal, d };
+      })
+      .sort((a, b) => a.d - b.d)
+      .slice(0, 5);
+
+    return {
+      params: { commune: commune.slug },
+      props: { commune, nearbyCommunes: nearby }
+    };
+  });
+}
+
+interface Props {
+  commune: typeof communes[0] & {
+    introText: string;
+    accessibilityChallenge: string;
+    localHelp: string;
+    anecdotePatrimoine: string;
+    climCharacteristics: {
+      brandPreference: string;
+      fluidType: string;
+      copRatio: string;
+      certifiedLevel: string;
+    };
+    priceTiers: {
+      splitMono: string;
+      splitBi: string;
+      splitTri: string;
+      gainable: string;
+    };
+    featuredGuide: {
+      title: string;
+      slug: string;
+    };
+    faq: { q: string; a: string; }[];
+  };
+  nearbyCommunes: { nom: string; slug: string; codePostal: string; }[];
+}
+
+const { commune, nearbyCommunes } = Astro.props;
+
+// Contextual visual cues
+const imageAlt = `Installation de climatisation réversible à ${commune.nom} par un frigoriste certifié RGE`;
+---
+<Layout 
+  title={`Climatisation à ${commune.nom} (${commune.codePostal}) — Frigoriste Certifié Var`} 
+  description={`Installez votre climatisation réversible de standing à ${commune.nom}. Obtenez 3 devis comparatifs sous 24h d'artisans frigoristes certifiés Qualipac.`}
+>
+  <!-- Schema LocalBusiness & FAQ -->
+  <SchemaMarkup type="LocalBusiness" data={{
+    name: `Climatisation ${commune.nom}`,
+    description: `Installation et entretien de systèmes de climatisation réversible et pompes à chaleur de standing à ${commune.nom} (${commune.codePostal}).`,
+    locality: commune.nom,
+    postalCode: commune.codePostal,
+    lat: commune.coordinates?.lat,
+    lon: commune.coordinates?.lon
+  }} />
+  <SchemaMarkup type="FAQPage" data={commune.faq} />
+
+  <Breadcrumb items={[
+    { label: "Villes du 83", url: "/communes/" },
+    { label: commune.nom }
+  ]} />
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container two-column-layout">
+      <div>
+        <span class="badge-pill" style="background:#E11D48; border-color:#FFE4E6; margin-bottom:15px; color:white;">
+          📍 Service Local — {commune.nom} ({commune.codePostal})
+        </span>
+        <h1 style="font-size:36px; line-height:1.2; margin-bottom:20px;">
+          Climatisation réversible à {commune.nom}
+        </h1>
+        <p style="font-size:18px; margin-bottom:25px; opacity:0.95; line-height:1.5;">
+          Équipez votre habitation à {commune.nom} d'un système réversible thermodynamique de standing. Étude de dimensionnement et devis comparatifs gratuits sous 24h.
+        </p>
+
+        <div style="background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,255,255,0.15); border-radius:15px; padding:20px; font-size:14px; line-height:1.5;">
+          <strong>📊 Chiffres clés du marché à {commune.nom} :</strong>
+          <ul style="list-style:none; margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+            <li>☀️ Intensité caniculaire : ~<strong>{commune.marketData.hotDays} jours</strong> au-dessus de 35°C par an.</li>
+            <li>🛠️ Artisans RGE de proximité : <strong>{commune.marketData.installateursAgrees} installateurs</strong> certifiés.</li>
+            <li>⏱️ Visite technique de conception : sous <strong>{commune.marketData.delaiMoyenJours} jours</strong> maximum.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <StepsForm initialZip={commune.codePostal} initialCommune={commune.nom} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Content section with local SEO -->
+  <section style="padding:60px 0; background:white;">
+    <div class="container two-column-layout" style="align-items:flex-start;">
+      
+      <!-- Left Column: Detailed custom copy -->
+      <div style="font-size:16px; line-height:1.7; color:var(--text);">
+        
+        <h2 style="font-size:24px; color:var(--primary); margin-bottom:15px; font-weight:700;">Climatisation réversible à {commune.nom} : Contexte local</h2>
+        <p style="margin-bottom:20px;">
+          {commune.introText}
+        </p>
+
+        <h3 style="font-size:20px; color:var(--primary); margin-bottom:12px; font-weight:700;">Spécificités géographiques de {commune.nom} ({commune.codePostal})</h3>
+        <p style="margin-bottom:20px;">
+          D'un point de vue géographique, la commune de <strong>{commune.nom}</strong> s'étend sur une superficie de <strong>{commune.geographicData.surfaceKm2} km²</strong>. Avec une altitude moyenne s'élevant à <strong>{commune.altitude} mètres</strong> et une densité de population de <strong>{commune.geographicData.density} habitants par km²</strong>, l'implantation des réseaux de génie thermique doit s'adapter précisément au relief et à l'urbanisme local. 
+          Située à environ <strong>{commune.geographicData.distanceToCenter} kilomètres</strong> de Toulon (le centre administratif du département du Var), la localité bénéficie d'une couverture technique rapide par nos installateurs partenaires certifiés RGE Qualipac.
+        </p>
+
+
+        <!-- Dynamic Contextual Guide Alert Widget -->
+        <div style="background:var(--primary-light); border-left:4px solid var(--secondary); padding:20px; border-radius:8px; margin:25px 0;">
+          <h4 style="margin:0 0 5px 0; color:var(--primary); font-weight:700; font-size:16px;">💡 Dossier d'expert recommandé pour {commune.nom} :</h4>
+          <p style="margin:0 0 10px 0; font-size:14px; color:var(--text-muted);">
+            En raison de la configuration immobilière et des contraintes climatiques spécifiques de {commune.nom}, nous vous suggérons la lecture de notre article dédié.
+          </p>
+          <a href={`/guides/${commune.featuredGuide.slug}/`} style="color:var(--secondary); font-weight:700; text-decoration:none; font-size:14px; display:inline-flex; align-items:center; gap:5px;">
+            → Lire notre guide : "{commune.featuredGuide.title}"
+          </a>
+        </div>
+
+        <div style="margin: 25px 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+          <img src="/images/hero-climatisation-var.png" alt={imageAlt} style="width: 100%; height: auto; display: block;" loading="lazy" />
+        </div>
+
+        <h2 style="font-size:24px; color:var(--primary); margin-bottom:15px; font-weight:700;">Le défi de l'installation et de la réglementation à {commune.nom}</h2>
+        <p style="margin-bottom:20px;">
+          {commune.accessibilityChallenge}
+        </p>
+
+        <h2 style="font-size:24px; color:var(--primary); margin-bottom:15px; font-weight:700;">Aides financières et subventions énergie dans le Var</h2>
+        <p style="margin-bottom:20px;">
+          {commune.localHelp}
+        </p>
+
+        <!-- Dynamic Pricing Grid (Calculated per city standing) -->
+        <h3 style="font-size:22px; color:var(--primary); margin:35px 0 15px; font-weight:700;">💰 Grille de Tarifs Posés Indicative à {commune.nom} (2026)</h3>
+        <p style="font-size:15px; color:var(--text-muted); margin-bottom:20px;">
+          Retrouvez les coûts moyens constatés pour la fourniture et la mise en service par un frigoriste agréé RGE à {commune.nom} :
+        </p>
+        <div style="background:white; border:1px solid var(--border-color); border-radius:12px; overflow:hidden; margin-bottom:40px; box-shadow:var(--shadow-sm);">
+          <table style="width:100%; border-collapse:collapse; text-align:left; font-size:15px;">
+            <thead>
+              <tr style="background:var(--primary-light); border-bottom:2px solid var(--border-color);">
+                <th style="padding:15px; font-weight:700; color:var(--primary);">Système & Puissance</th>
+                <th style="padding:15px; font-weight:700; color:var(--primary); text-align:right;">Tarif Moyen Posé TTC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:15px; color:var(--text); font-weight:600;">Mono-Split Mural (2.5 - 3.5 kW)</td>
+                <td style="padding:15px; text-align:right; font-weight:700; color:var(--secondary); font-family:var(--font-mono);">{commune.priceTiers.splitMono}</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:15px; color:var(--text); font-weight:600;">Bi-Split Mural (4.0 - 5.2 kW)</td>
+                <td style="padding:15px; text-align:right; font-weight:700; color:var(--secondary); font-family:var(--font-mono);">{commune.priceTiers.splitBi}</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:15px; color:var(--text); font-weight:600;">Tri-Split Mural (6.0 - 8.0 kW)</td>
+                <td style="padding:15px; text-align:right; font-weight:700; color:var(--secondary); font-family:var(--font-mono);">{commune.priceTiers.splitTri}</td>
+              </tr>
+              <tr>
+                <td style="padding:15px; color:var(--text); font-weight:600;">Gainable Invisible Multi-zones</td>
+                <td style="padding:15px; text-align:right; font-weight:700; color:var(--secondary); font-family:var(--font-mono);">{commune.priceTiers.gainable}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Technical Specification Card -->
+        <div style="background:var(--primary-light); border:1.5px solid var(--border-color); border-radius:15px; padding:30px; margin:40px 0;">
+          <h3 style="font-size:20px; color:var(--primary); margin-bottom:15px; text-align:center;">📋 Spécifications climatisation préconisées à {commune.nom}</h3>
+          <table style="width:100%; font-size:14px; border-collapse:collapse;">
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:10px 0; font-weight:bold; color:var(--text);">Marques préconisées</td>
+                <td style="padding:10px 0; text-align:right; color:var(--text-muted);">{commune.climCharacteristics.brandPreference}</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:10px 0; font-weight:bold; color:var(--text);">Fluide frigorigène utilisé</td>
+                <td style="padding:10px 0; text-align:right; color:var(--text-muted);">{commune.climCharacteristics.fluidType}</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:10px 0; font-weight:bold; color:var(--text);">Performance thermique (COP)</td>
+                <td style="padding:10px 0; text-align:right; color:var(--text-muted);">{commune.climCharacteristics.copRatio}</td>
+              </tr>
+              <tr>
+                <td style="padding:10px 0; font-weight:bold; color:var(--text);">Habilitation requise installateur</td>
+                <td style="padding:10px 0; text-align:right; color:var(--text-muted);">{commune.climCharacteristics.certifiedLevel}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 style="font-size:24px; color:var(--primary); margin-bottom:15px; font-weight:700;">Respect de l'esthétique et du patrimoine dans le Var</h2>
+        <p style="margin-bottom:30px;">
+          {commune.anecdotePatrimoine}
+        </p>
+
+        <!-- FAQs Dynamic -->
+        <h2 style="font-size:24px; color:var(--primary); margin-bottom:20px; font-weight:700;">Foire aux Questions (FAQ) — {commune.nom}</h2>
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          {commune.faq.map(item => (
+            <div style="background:var(--primary-light); border:1px solid var(--border-color); border-radius:12px; padding:20px;">
+              <h4 style="font-size:16px; color:var(--primary); margin-bottom:8px; font-weight:700;">❓ {item.q}</h4>
+              <p style="font-size:15px; color:var(--text); line-height:1.5;">{item.a}</p>
+            </div>
+          ))}
+        </div>
+
+      </div>
+
+      <!-- Right Column: Sidebar with geographical info and neighboring communes links -->
+      <aside style="display:flex; flex-direction:column; gap:30px; position: sticky; top: 100px;">
+        
+        <!-- Local Identity Table -->
+        <div style="background: white; border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 25px; box-shadow:var(--shadow-sm);">
+          <h3 style="font-size:18px; color:var(--primary); margin-bottom:15px; text-align:center;">📋 Fiche administrative : {commune.nom}</h3>
+          
+          <table style="width:100%; font-size:13px; border-collapse:collapse; margin-bottom:15px;">
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:8px 0; color:var(--text-muted);">Code Insee</td>
+                <td style="padding:8px 0; text-align:right; font-weight:bold;">{commune.codeInsee}</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:8px 0; color:var(--text-muted);">Superficie</td>
+                <td style="padding:8px 0; text-align:right; font-weight:bold;">{commune.geographicData.surfaceKm2} km²</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:8px 0; color:var(--text-muted);">Densité de population</td>
+                <td style="padding:8px 0; text-align:right; font-weight:bold;">{commune.geographicData.density} hab/km²</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:8px 0; color:var(--text-muted);">Distance de Toulon</td>
+                <td style="padding:8px 0; text-align:right; font-weight:bold;">~ {commune.geographicData.distanceToCenter} km</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 0; color:var(--text-muted);">Altitude moyenne</td>
+                <td style="padding:8px 0; text-align:right; font-weight:bold;">{commune.altitude} m</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--border-color); padding-top:15px; font-size:12px;">
+            <strong style="color:var(--text); margin-bottom:4px; display:block;">Liens officiels complémentaires :</strong>
+            <a href={commune.geographicData.geoportailLink} target="_blank" rel="noopener noreferrer" style="color:var(--primary); text-decoration:none; display:flex; align-items:center; gap:5px;">
+              🗺️ Carte Géoportail de {commune.nom} &rarr;
+            </a>
+            <a href={commune.geographicData.inseeLink} target="_blank" rel="noopener noreferrer" style="color:var(--primary); text-decoration:none; display:flex; align-items:center; gap:5px;">
+              📊 Statistiques INSEE {commune.nom} &rarr;
+            </a>
+            <a href={commune.geographicData.departmentLink} target="_blank" rel="noopener noreferrer" style="color:var(--primary); text-decoration:none; display:flex; align-items:center; gap:5px;">
+              🏛️ Site du Département du Var (83) &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Proximity loop Links -->
+        <div style="background: var(--primary-light); border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 25px;">
+          <h3 style="font-size:18px; color:var(--primary); margin-bottom:15px; text-align:center;">📍 Villes voisines (83)</h3>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:10px;">
+            {nearbyCommunes.map(nc => (
+              <li>
+                <a href={`/climatisation-${nc.slug}/`} style="text-decoration:none; display:flex; justify-content:space-between; background:white; border:1px solid var(--border-color); padding:10px; border-radius:8px; font-size:13px; color:var(--text); transition:var(--transition);">
+                  <strong>{nc.nom}</strong>
+                  <span style="color:var(--primary); font-size:11px;">{nc.codePostal} &rarr;</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div style="margin-top:20px; text-align:center; border-top:1px solid var(--border-color); padding-top:15px;">
+            <a href={`/installateur-climatisation-${commune.slug}/`} style="font-size:13px; font-weight:bold; color:var(--secondary); text-decoration:none;">
+              🏢 Trouver un installateur à {commune.nom} &rarr;
+            </a>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </section>
+</Layout>

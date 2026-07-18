@@ -1,0 +1,68 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+---
+
+<Layout title="Demande de Devis Envoyée avec Succès | Climatisation 83" description="Votre demande de devis pour votre climatisation réversible a bien été reçue. Un conseiller technique prend contact avec vous.">
+  <Breadcrumb items={[
+    { label: "Demande de Devis", url: "/devis/" },
+    { label: "Confirmation de demande" }
+  ]} />
+
+  <section style="padding: 60px 0 100px; background: white; text-align: center;">
+    <div class="container" style="max-width: 600px;">
+      <div style="font-size: 64px; margin-bottom: 20px;">✅</div>
+      
+      <h1 id="success-title" style="font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">
+        Votre demande de devis a bien été reçue !
+      </h1>
+      
+      <p id="success-desc" style="font-size: 18px; color: var(--text-muted); line-height: 1.6; margin-bottom: 40px;">
+        Votre dossier technique est en cours d'analyse. Un conseiller spécialisé en rénovation thermique va vous contacter sous 24h ouvrées afin de valider vos critères et votre éligibilité aux aides.
+      </p>
+
+      <div style="background: var(--primary-light); border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 30px; text-align: left;">
+        <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 18px; font-weight: 700;">PROCHAINES ÉTAPES :</h3>
+        <ol style="margin-left: 20px; display: flex; flex-direction: column; gap: 15px; font-size: 15px; color: var(--text);">
+          <li>
+            <strong>📞 Validation par téléphone (Gratuit) :</strong>
+            <span style="display: block; color: var(--text-muted); margin-top: 4px;">Un conseiller local valide les détails techniques de votre logement (surface, orientation, isolation) et estime votre droit aux subventions et primes CEE.</span>
+          </li>
+          <li>
+            <strong>🛠️ Mise en relation locale (83) :</strong>
+            <span style="display: block; color: var(--text-muted); margin-top: 4px;">Nous transmettons votre projet à un maximum de 3 installateurs RGE qualifiés opérant dans votre secteur géographique du Var.</span>
+          </li>
+          <li>
+            <strong>📝 Devis gratuits et sans engagement :</strong>
+            <span style="display: block; color: var(--text-muted); margin-top: 4px;">Les artisans réalisent une visite technique gratuite sur place et vous proposent leurs devis détaillés. Vous restez totalement libre de votre choix.</span>
+          </li>
+        </ol>
+      </div>
+
+      <div style="margin-top: 40px;">
+        <a href="/" class="btn-primary">Retour à l'accueil</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Simple clientside query param reader to personalize page if values exist
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const prenom = params.get('prenom');
+    const ville = params.get('ville');
+
+    if (prenom && ville) {
+      const titleEl = document.getElementById('success-title');
+      const descEl = document.getElementById('success-desc');
+      
+      if (titleEl) {
+        titleEl.innerHTML = `Merci ${prenom}, votre demande est bien enregistrée !`;
+      }
+      if (descEl) {
+        descEl.innerHTML = `Nos installateurs agréés étudient actuellement votre projet de climatisation à <strong>${ville}</strong>. Un conseiller vous appellera d'ici quelques heures pour valider vos aides et votre reste à charge.`;
+      }
+    }
+  });
+</script>

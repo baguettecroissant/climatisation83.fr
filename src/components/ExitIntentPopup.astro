@@ -1,0 +1,136 @@
+---
+---
+<div id="exit-intent-popup" class="exit-popup-overlay" aria-hidden="true" role="dialog">
+  <div class="exit-popup-content">
+    <button id="close-exit-popup" class="exit-popup-close" aria-label="Fermer la fenêtre">&times;</button>
+    <div class="exit-popup-header">
+      <span class="exit-popup-badge" style="background: var(--primary-light); border: 1px solid var(--border-color); color: var(--primary); font-size: 13px; font-weight: 700; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; display: inline-flex; align-items: center;">🌊 Urgence Canicule Var (83)</span>
+      <h2 style="margin-top: 15px; font-size: 22px; color: var(--primary); line-height: 1.3;">Propriétaires du Var : Climatisez votre intérieur au meilleur prix !</h2>
+    </div>
+    <div class="exit-popup-body" style="margin: 20px 0; font-size: 15px; line-height: 1.6; color: var(--text);">
+      <p>Installez une <strong>climatisation réversible (PAC air-air) haut de gamme</strong> et gagnez en confort thermique tout en purifiant votre air intérieur.</p>
+      
+      <div class="exit-popup-stats" style="display: flex; justify-content: center; gap: 15px; margin: 20px 0;">
+        <div class="stat-box" style="flex: 1; background-color: var(--primary-light); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px;">
+          <span class="stat-number" style="display: block; font-family: var(--font-mono); font-size: 24px; font-weight: 800; color: var(--primary);">A+++</span>
+          <span class="stat-label" style="display: block; font-size: 12px; color: var(--text-muted); margin-top: 4px;">Haute Performance SEER</span>
+        </div>
+        <div class="stat-box" style="flex: 1; background-color: var(--primary-light); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px;">
+          <span class="stat-number" style="display: block; font-family: var(--font-mono); font-size: 24px; font-weight: 800; color: var(--primary);">CEE</span>
+          <span class="stat-label" style="display: block; font-size: 12px; color: var(--text-muted); margin-top: 4px;">Subventions 2026</span>
+        </div>
+      </div>
+      
+      <p class="exit-popup-note" style="font-size: 14px; font-weight: 700; color: var(--text); margin-top: 15px;">Simple, gratuit et sans engagement : recevez 3 devis de frigoristes RGE du Var.</p>
+    </div>
+    <div class="exit-popup-footer">
+      <a href="/devis/" class="btn-primary exit-popup-btn" style="width: 100%; margin-top: 10px;">Estimer mon projet &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .exit-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 20px;
+  }
+
+  .exit-popup-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .exit-popup-content {
+    background: white;
+    border-radius: 20px;
+    padding: 35px;
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.15);
+    border: 2px solid var(--border-color);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    text-align: center;
+  }
+
+  .exit-popup-overlay.show .exit-popup-content {
+    transform: scale(1);
+  }
+
+  .exit-popup-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const popup = document.getElementById('exit-intent-popup');
+    const closeBtn = document.getElementById('close-exit-popup');
+    const storageKey = 'clim_var_exit_popup_shown';
+    
+    if (!popup) return;
+    
+    // Check if already shown
+    const isShown = localStorage.getItem(storageKey);
+    if (isShown) return;
+    
+    const showPopup = () => {
+      if (localStorage.getItem(storageKey)) return;
+      popup.classList.add('show');
+      popup.setAttribute('aria-hidden', 'false');
+      localStorage.setItem(storageKey, 'true');
+    };
+    
+    // Desktop: exit intent
+    document.addEventListener('mouseleave', (e) => {
+      if (e.clientY < 50) {
+        showPopup();
+      }
+    });
+    
+    // Mobile: trigger after 20s
+    setTimeout(() => {
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        showPopup();
+      }
+    }, 20000);
+
+    // Close actions
+    const closePopup = () => {
+      popup.classList.remove('show');
+      popup.setAttribute('aria-hidden', 'true');
+    };
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closePopup);
+    }
+
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup) {
+        closePopup();
+      }
+    });
+  });
+</script>

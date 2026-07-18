@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /confirmation
+Disallow: /confirmation/
+
+Sitemap: https://climatisation-var.fr/sitemap-index.xml

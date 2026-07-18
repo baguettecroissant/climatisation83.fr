@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
+const title = "Politique de Confidentialité — Climatisation Var";
+const description = "Consultez notre politique de confidentialité et de gestion des données personnelles (RGPD) du site.";
+
+const breadcrumbItems = [
+  { label: "Accueil", url: "/" },
+  { label: "Politique de Confidentialité" }
+];
+---
+
+<Layout title={title} description={description}>
+  <Breadcrumb items={breadcrumbItems} />
+
+  <section style="padding: 50px 0 80px; background: white;">
+    <div class="container" style="max-width: 800px; font-size:16px; line-height:1.7; color:var(--text);">
+      <h1 style="color:var(--primary); margin-bottom:20px;">Politique de Confidentialité (RGPD)</h1>
+      
+      <p style="margin-bottom:15px; color:var(--text-muted);">
+        La protection de vos données personnelles est au cœur de nos engagements. Cette politique vous informe de la façon dont nous traitons les données recueillies via notre formulaire de devis.
+      </p>
+
+      <h2 style="font-size:20px; color:var(--primary); margin:25px 0 10px;">1. Données collectées</h2>
+      <p style="margin-bottom:15px; color:var(--text-muted);">
+        Lorsque vous soumettez une demande de devis sur notre site, les informations suivantes sont collectées : nom, prénom, adresse email, numéro de téléphone, adresse postale complète, descriptif et caractéristiques du projet (type d'installation, chauffage, urgence) et adresse IP.
+      </p>
+
+      <h2 style="font-size:20px; color:var(--primary); margin:25px 0 10px;">2. Finalité du traitement</h2>
+      <p style="margin-bottom:15px; color:var(--text-muted);">
+        Ces données sont collectées uniquement afin de traiter votre demande de devis gratuit et de vous mettre en relation avec des climaticiens et frigoristes locaux qualifiés. Les données de contact font l'objet d'une validation technique préalable avant d'être transmises au réseau d'artisans.
+      </p>
+
+      <h2 style="font-size:20px; color:var(--primary); margin:25px 0 10px;">3. Transmission des données</h2>
+      <p style="margin-bottom:15px; color:var(--text-muted);">
+        Afin de vous proposer des devis comparatifs pertinents, vos informations sont envoyées de manière sécurisée à la plateforme d'affiliation partenaire <strong>ViteUnDevis / Le Coin des Artisans</strong>, qui les soumet ensuite à ses installateurs locaux certifiés RGE opérant dans le Var (83).
+      </p>
+
+      <h2 style="font-size:20px; color:var(--primary); margin:25px 0 10px;">4. Vos Droits</h2>
+      <p style="margin-bottom:15px; color:var(--text-muted);">
+        Conformément à la réglementation européenne RGPD, vous disposez d'un droit d'accès, de rectification, de portabilité et de suppression de vos données personnelles. Vous pouvez exercer ces droits à tout moment en envoyant votre demande par email ou en contactant notre support technique.
+      </p>
+    </div>
+  </section>
+</Layout>

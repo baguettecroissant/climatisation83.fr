@@ -1,0 +1,131 @@
+---
+import '../styles/global.css';
+import config from '../data/config.json';
+import communes from '../data/communes.json';
+import ExitIntentPopup from '../components/ExitIntentPopup.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalUrl?: string;
+  activeTab?: string;
+}
+
+const { 
+  title = "Climatisation Var (83) : Installateurs RGE & Devis Gratuit 2026", 
+  description = "Comparez les installateurs RGE de climatisation réversible et pompe à chaleur dans le Var (83). Installation rapide, devis gratuit.", 
+  canonicalUrl,
+  activeTab
+} = Astro.props;
+
+const currentYear = new Date().getFullYear();
+const normalizedPath = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const canonical = canonicalUrl || `https://${config.domain}${normalizedPath}`;
+
+// Top 8 populated communes in Var
+const topCommunes = communes && communes.length ? communes.slice(0, 8) : [];
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`https://${config.domain}/images/hero-climatisation-var.png`} />
+    
+    <meta name="robots" content="index, follow" />
+  </head>
+  <body>
+    <header>
+      <div class="container header-inner">
+        <a href="/" class="logo">
+          <span>🌴</span> Climatisation 83
+        </a>
+        <nav class="header-nav" aria-label="Menu principal">
+          <a href="/" class={activeTab === 'home' ? 'active' : ''}>Accueil</a>
+          <a href="/guides/aides-financieres-climatisation-2026/" class={activeTab === 'aides' ? 'active' : ''}>💶 Aides 2026</a>
+          <a href="/guides/split-mural-vs-gainable-var/" class={activeTab === 'gainable' ? 'active' : ''}>🏠 Gainable Invisible</a>
+          <a href="/tarifs/" class={activeTab === 'tarifs' ? 'active' : ''}>Tarifs Pose</a>
+          <a href="/communes/" class={activeTab === 'communes' ? 'active' : ''}>Villes 83</a>
+        </nav>
+        <div>
+          <a href="/devis/" class="btn-primary header-cta">Devis Gratuit &rarr;</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <h3 style="margin-bottom:15px; color:white;">🌴 Climatisation Var</h3>
+          <p style="font-size:15px; color:#cbd5e1; line-height:1.6; margin-bottom:20px;">
+            Le portail indépendant de comparaison pour l'installation de climatisations réversibles (pompe à chaleur air-air) et PAC de standing dans le Var (83). Artisans RGE Qualipac.
+          </p>
+          <p style="font-size:14px; color:#64748b;">
+            Un service d'information locale pour Toulon, La Seyne-sur-Mer, Hyères, Fréjus, Draguignan, Saint-Raphaël, Six-Fours-les-Plages, La Garde, La Valette-du-Var, et Ollioules.
+          </p>
+        </div>
+        
+        <div class="footer-links">
+          <h3 style="color:white;">Villes Principales (83)</h3>
+          <ul>
+            {topCommunes.map(c => (
+              <li>
+                <a href={`/climatisation-${c.slug}/`}>Climatisation {c.nom} ({c.codePostal})</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        
+        <div class="footer-links">
+          <h3 style="color:white;">Guides & Informations</h3>
+          <ul>
+            <li><a href="/guides/aides-financieres-climatisation-2026/">Aides financières climatisation 2026</a></li>
+            <li><a href="/guides/split-mural-vs-gainable-var/">Climatisation gainable Var</a></li>
+            <li><a href="/tarifs/">Grille des tarifs de pose 2026</a></li>
+            <li><a href="/communes/">Annuaire des communes du 83</a></li>
+            <li><a href="/politique-confidentialite/">Politique de confidentialité</a></li>
+            <li><a href="/mentions-legales/">Mentions légales</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="container footer-bottom">
+        <p>&copy; {currentYear} {config.domain}. Tous droits réservés.</p>
+        <p style="font-size:13px; color:#64748b;">
+          Comparateur gratuit sans engagement. Les estimations d'aides et de prix sont indicatives et dépendent d'une étude technique à domicile par un professionnel qualifié.
+        </p>
+      </div>
+    </footer>
+
+    {Astro.url.pathname !== '/devis' && Astro.url.pathname !== '/devis/' && Astro.url.pathname !== '/confirmation' && Astro.url.pathname !== '/confirmation/' && (
+      <div class="mobile-sticky-cta">
+        <div class="container-sticky">
+          <div class="sticky-text">
+            <strong>Climatisation RGE — Devis 24h</strong>
+            <span>Estimation d'aides gratuites</span>
+          </div>
+          <a href="/devis/" class="btn-primary sticky-btn">Devis Gratuit &rarr;</a>
+        </div>
+      </div>
+    )}
+
+    <ExitIntentPopup />
+  </body>
+</html>

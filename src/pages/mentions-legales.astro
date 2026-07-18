@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
+const title = "Mentions Légales — Climatisation Var";
+const description = "Retrouvez les mentions légales et informations obligatoires pour le site climatisation-var.fr.";
+
+const breadcrumbItems = [
+  { label: "Accueil", url: "/" },
+  { label: "Mentions Légales" }
+];
+---
+
+<Layout title={title} description={description}>
+  <Breadcrumb items={breadcrumbItems} />
+
+  <section style="padding: 50px 0 80px; background: white;">
+    <div class="container" style="max-width: 800px; font-size:16px; line-height:1.7; color:var(--text);">
+      <h1 style="color:var(--primary); margin-bottom:20px;">Mentions Légales</h1>
+      
+      <h2 style="font-size:20px; color:var(--primary); margin:25px 0 10px;">1. Édition du site</h2>
+      <p style="margin-bottom:15px; color:var(--text-muted);">
+        Le présent site Web, accessible à l'adresse <code>climatisation-var.fr</code>, est édité pour le compte de Wade Studio Ltd.
+      </p>
+
+      <h2 style="font-size:20px; color:var(--primary); margin:25px 0 10px;">2. Hébergement</h2>
+      <p style="margin-bottom:15px; color:var(--text-muted);">
+        Le site est hébergé par la société <strong>Cloudflare Inc.</strong>, dont le siège social est situé à San Francisco, Californie, USA. Contact : <a href="https://www.cloudflare.com" style="color:var(--primary);">www.cloudflare.com</a>.
+      </p>
+
+      <h2 style="font-size:20px; color:var(--primary); margin:25px 0 10px;">3. Propriété intellectuelle</h2>
+      <p style="margin-bottom:15px; color:var(--text-muted);">
+        Tous les éléments textuels, graphiques et structurels du site sont protégés par le droit d'auteur. Toute reproduction ou représentation totale ou partielle de ce site, par quelque procédé que ce soit, sans l'autorisation expresse de l'éditeur est interdite.
+      </p>
+
+      <h2 style="font-size:20px; color:var(--primary); margin:25px 0 10px;">4. Description des services et affiliation</h2>
+      <p style="margin-bottom:15px; color:var(--text-muted);">
+        Ce site fonctionne sous le modèle du \"Rank & Rent\" (site indépendant). Il propose un service gratuit d'information sur les systèmes de climatisation et met en relation les utilisateurs avec des professionnels partenaires locaux (via le réseau d'affiliation de devis \"ViteUnDevis\" / \"Le Coin des Artisans\"). L'éditeur ne réalise pas de travaux d'installation et décline toute responsabilité quant aux contrats signés avec les techniciens installateurs partenaires.
+      </p>
+    </div>
+  </section>
+</Layout>

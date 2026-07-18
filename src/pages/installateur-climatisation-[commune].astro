@@ -1,0 +1,162 @@
+---
+import Layout from '../layouts/Layout.astro';
+import StepsForm from '../components/StepsForm.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import communes from '../data/communes.json';
+
+export async function getStaticPaths() {
+  const data = communes;
+  return data.map((commune) => {
+    const lat1 = commune.coordinates?.lat ? commune.coordinates.lat : 43.1242;
+    const lon1 = commune.coordinates?.lon ? commune.coordinates.lon : 5.9280;
+    
+    // Find 5 closest communes
+    const nearby = data
+      .filter((other) => other.slug !== commune.slug)
+      .map((other) => {
+        const lat2 = other.coordinates?.lat ? other.coordinates.lat : 43.1242;
+        const lon2 = other.coordinates?.lon ? other.coordinates.lon : 5.9280;
+        const d = Math.sqrt(Math.pow(lat1 - lat2, 2) + Math.pow(lon1 - lon2, 2));
+        return { nom: other.nom, slug: other.slug, codePostal: other.codePostal, d };
+      })
+      .sort((a, b) => a.d - b.d)
+      .slice(0, 5);
+
+    return {
+      params: { commune: commune.slug },
+      props: { commune, nearbyCommunes: nearby }
+    };
+  });
+}
+
+interface Props {
+  commune: typeof communes[0] & {
+    introText: string;
+    localHelp: string;
+    climCharacteristics: {
+      brandPreference: string;
+      fluidType: string;
+      copRatio: string;
+      certifiedLevel: string;
+    };
+    faq: { q: string; a: string; }[];
+  };
+  nearbyCommunes: { nom: string; slug: string; codePostal: string; }[];
+}
+
+const { commune, nearbyCommunes } = Astro.props;
+const imageAlt = `Trouver un installateur de climatisation certifié RGE à ${commune.nom}`;
+---
+<Layout 
+  title={`Installateur Climatisation à ${commune.nom} (${commune.codePostal}) — Devis Artisans RGE`} 
+  description={`Trouvez un installateur de climatisation qualifié RGE à ${commune.nom}. Obtenez 3 devis comparatifs gratuits pour votre pompe à chaleur réversible ou split mural.`}
+>
+  <!-- Schema LocalBusiness -->
+  <SchemaMarkup type="LocalBusiness" data={{
+    name: `Installateurs Climatisation ${commune.nom}`,
+    description: `Professionnels qualifiés RGE pour la pose de climatisations réversibles à ${commune.nom} (${commune.codePostal}).`,
+    locality: commune.nom,
+    postalCode: commune.codePostal,
+    lat: commune.coordinates?.lat,
+    lon: commune.coordinates?.lon
+  }} />
+
+  <Breadcrumb items={[
+    { label: "Villes du 83", url: "/communes/" },
+    { label: commune.nom, url: `/climatisation-${commune.slug}/` },
+    { label: "Installateur RGE" }
+  ]} />
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container two-column-layout">
+      <div>
+        <span class="badge-pill" style="background:#E11D48; border-color:#FFE4E6; margin-bottom:15px; color:white;">
+          🛠️ Artisans RGE de Proximité
+        </span>
+        <h1 style="font-size:36px; line-height:1.2; margin-bottom:20px;">
+          Installateur Climatisation à {commune.nom}
+        </h1>
+        <p style="font-size:18px; margin-bottom:25px; opacity:0.95; line-height:1.5;">
+          Faites installer votre système réversible par une entreprise certifiée RGE (Qualipac) active à {commune.nom}. Assurez la conformité technique de vos travaux de climatisation et optimisez vos subventions énergétiques.
+        </p>
+
+        <div style="background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,255,255,0.15); border-radius:15px; padding:20px; font-size:14px; line-height:1.5;">
+          <strong>🎯 Avantages d'un installateur certifié à {commune.nom} :</strong>
+          <ul style="list-style:none; margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+            <li>🛡️ Éligibilité absolue aux aides financières nationales et primes CEE.</li>
+            <li>🛡️ Garantie décennale et biennale sur les équipements et les travaux de pose.</li>
+            <li>🛡️ Manipulation du fluide écologique R32 habilitée en conformité réglementaire.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <StepsForm initialZip={commune.codePostal} initialCommune={commune.nom} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Detailed contractor advice -->
+  <section style="padding:60px 0; background:white;">
+    <div class="container two-column-layout" style="align-items:flex-start;">
+      
+      <div style="font-size:16px; line-height:1.7; color:var(--text);">
+        <h2 style="font-size:24px; color:var(--primary); margin-bottom:15px; font-weight:700;">Pourquoi faire appel à un frigoriste certifié à {commune.nom} ?</h2>
+        
+        <p style="margin-bottom:20px; font-style: italic; color: var(--text-muted);">
+          Spécificités géographiques : Avec une altitude moyenne de {commune.altitude} mètres et s'étendant sur {commune.geographicData.surfaceKm2} km², la commune de {commune.nom} ({commune.codePostal}) possède une densité de {commune.geographicData.density} hab/km². Sa distance de Toulon (~{commune.geographicData.distanceToCenter} km) en fait une zone d'intervention directe pour nos partenaires locaux.
+        </p>
+
+        <p style="margin-bottom:20px;">
+          L'installation d'une climatisation réversible ou d'une pompe à chaleur air-air n'est pas un simple travail de bricolage. Elle requiert la manipulation de gaz frigorigènes réglementés (R32) et un raccordement électrique conforme à la norme NF C 15-100.
+        </p>
+
+        <p style="margin-bottom:20px;">
+          En choisissant un frigoriste qualifié RGE disposant de l'attestation de capacité de manipulation des fluides de catégorie I opérant à <strong>{commune.nom}</strong>, vous vous prémunissez contre les fuites de gaz, les pannes précoces du compresseur et les baisses de rendement énergétique.
+        </p>
+
+        <div style="margin: 25px 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+          <img src="/images/hero-climatisation-var.png" alt={imageAlt} style="width: 100%; height: auto; display: block;" loading="lazy" />
+        </div>
+
+        <h2 style="font-size:24px; color:var(--primary); margin-bottom:15px; font-weight:700;">Comment choisir son entreprise de climatisation dans le Var (83) ?</h2>
+        <p style="margin-bottom:20px;">
+          Pour sélectionner le bon installateur de climatisation à {commune.nom}, nous vous conseillons de vérifier :
+        </p>
+        <ul style="margin-left:20px; display:flex; flex-direction:column; gap:10px; margin-bottom:30px; color:var(--text-muted);">
+          <li><strong>Le label Qualipac RGE :</strong> indispensable pour l'obtention des subventions de l'Anah et des CEE.</li>
+          <li><strong>L'attestation d'assurance décennale :</strong> couvrant les percements de dalles, façades et d'étanchéité.</li>
+          <li><strong>Les marques partenaires :</strong> privilégiez les frigoristes proposant des marques réputées comme Daikin ou Mitsubishi Electric.</li>
+          <li><strong>Les avis clients locaux :</strong> témoins de la qualité du service après-vente (SAV).</li>
+        </ul>
+
+        <div style="background:var(--primary-light); border:1.5px solid var(--border-color); border-radius:15px; padding:30px; margin-bottom:45px;">
+          <h3 style="font-size:20px; color:var(--primary); margin-bottom:12px; text-align:center;">💡 Notre charte qualité pour {commune.nom}</h3>
+          <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin:0; text-align:center;">
+            Nous transmettons vos projets de climatisation uniquement à des artisans reconnus garants de l'environnement (RGE) disposant d'assurances décennales à jour et basés dans le département du Var (83).
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Column: Sidebar -->
+      <aside style="display:flex; flex-direction:column; gap:30px; position: sticky; top: 100px;">
+        <div style="background: white; border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 25px; box-shadow:var(--shadow-sm);">
+          <h3 style="font-size:18px; color:var(--primary); margin-bottom:15px; text-align:center;">📍 Villes proches couvertes</h3>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:10px;">
+            {nearbyCommunes.map(nc => (
+              <li>
+                <a href={`/installateur-climatisation-${nc.slug}/`} style="text-decoration:none; display:flex; justify-content:space-between; background:white; border:1px solid var(--border-color); padding:10px; border-radius:8px; font-size:13px; color:var(--text); transition:var(--transition);">
+                  <strong>{nc.nom}</strong>
+                  <span style="color:var(--primary); font-size:11px;">{nc.codePostal} &rarr;</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+
+    </div>
+  </section>
+</Layout>

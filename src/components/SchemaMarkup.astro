@@ -1,0 +1,61 @@
+---
+interface Props {
+  type: 'LocalBusiness' | 'FAQPage';
+  data: any;
+}
+
+const { type, data } = Astro.props;
+
+let schemaJson = "";
+
+if (type === 'LocalBusiness') {
+  schemaJson = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": data.name || "Climatisation Var",
+    "description": data.description || "Installation de climatisation réversible et pompes à chaleur RGE dans le Var (83).",
+    "url": "https://climatisation-var.fr",
+    "telephone": "+33494000000",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": data.locality || "Toulon",
+      "postalCode": data.postalCode || "83000",
+      "addressRegion": "Provence-Alpes-Côte d'Azur",
+      "addressCountry": "FR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": data.lat || 43.1242,
+      "longitude": data.lon || 5.9280
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "opens": "08:00",
+      "closes": "19:00"
+    }
+  });
+} else if (type === 'FAQPage') {
+  schemaJson = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": data.map((item: any) => ({
+      "@type": "Question",
+      "name": item.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.a
+      }
+    }))
+  });
+}
+---
+
+<script type="application/ld+json" set:html={schemaJson} />

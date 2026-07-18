@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="32" fill="#1E3A5F"/>
+  <circle cx="64" cy="64" r="42" fill="#E11D48"/>
+  <text x="64" y="86" font-size="64" text-anchor="middle" font-family="sans-serif">🌴</text>
+</svg>

@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import communes from '../data/communes.json';
+
+const title = "Installateur Climatisation Var : Annuaire Communes (83)";
+const description = "Retrouvez l'annuaire complet de toutes les communes du Var (83) couvertes par nos installateurs de climatisation et pompes à chaleur RGE.";
+
+const breadcrumbItems = [
+  { label: "Annuaire des Villes du 83" }
+];
+---
+
+<Layout title={title} description={description} activeTab="communes">
+  <Breadcrumb items={breadcrumbItems} />
+
+  <section style="padding: 50px 0 80px; background: white;">
+    <div class="container">
+      <div style="text-align: center; max-width: 800px; margin: 0 auto 50px;">
+        <span class="badge-pill" style="margin-bottom: 15px; background:var(--primary); color:white; border:none;">📍 Couverture Intégrale 83</span>
+        <h1 style="font-family: var(--font-heading); font-size: 36px; font-weight: 700; color: var(--primary); margin-bottom: 15px;">
+          Climatisation Var : Villes desservies
+        </h1>
+        <p style="font-size: 18px; color: var(--text-muted); line-height: 1.6;">
+          Nos techniciens frigoristes certifiés RGE interviennent sur l'ensemble des {communes.length} communes de plus de 2 000 habitants du département du Var. Cliquez sur votre commune ci-dessous pour estimer vos aides et tarifs locaux.
+        </p>
+      </div>
+
+      <!-- Alphabetical / Pop Grid -->
+      <div style="background:var(--primary-light); border:2px solid var(--border-color); border-radius:var(--radius-md); padding:40px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
+          {communes.map((c) => (
+            <div style="background:white; border:1px solid var(--border-color); border-radius:12px; padding:15px; transition:var(--transition); box-shadow:var(--shadow-sm);">
+              <a href={`/climatisation-${c.slug}/`} style="text-decoration:none; display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+                <div>
+                  <strong style="font-size:16px; color:var(--primary); display:block; margin-bottom:4px;">{c.nom}</strong>
+                  <span style="font-size:13px; color:var(--text-muted); font-family:var(--font-mono);">{c.codePostal}</span>
+                </div>
+                <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f0f9ff; padding-top:8px; font-size:11px; color:var(--text-muted);">
+                  <span>{c.population.toLocaleString('fr-FR')} hab</span>
+                  <span style="color:var(--secondary); font-weight:700;">Voir &rarr;</span>
+                </div>
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
