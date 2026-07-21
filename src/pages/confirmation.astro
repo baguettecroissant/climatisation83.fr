@@ -12,6 +12,9 @@ import Breadcrumb from '../components/Breadcrumb.astro';
   <section style="padding: 60px 0 100px; background: white; text-align: center;">
     <div class="container" style="max-width: 600px;">
       <div style="font-size: 64px; margin-bottom: 20px;">✅</div>
+
+      <!-- VUD Spinner — améliore le taux de validation SMS (~+20%) -->
+      <div id="vud_spin_376737" style="margin-bottom: 20px;"></div>
       
       <h1 id="success-title" style="font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">
         Votre demande de devis a bien été reçue !
@@ -52,6 +55,22 @@ import Breadcrumb from '../components/Breadcrumb.astro';
     const params = new URLSearchParams(window.location.search);
     const prenom = params.get('prenom');
     const ville = params.get('ville');
+    const devisId = params.get('devis_id');
+    const devisHash = params.get('devis_hash');
+
+    // VUD Spinner — charge le widget de validation SMS si devis_id et devis_hash sont présents
+    if (devisId && devisHash) {
+      const spinnerDiv = document.getElementById('vud_spin_376737');
+      if (spinnerDiv) {
+        const vudJs = document.createElement('script');
+        vudJs.type = 'text/javascript';
+        vudJs.src = `https://www.viteundevis.com/mb/spinner.php?devis_id=${devisId}&devis_hash=${devisHash}&box=376737`;
+        const firstScript = document.getElementsByTagName('script')[0];
+        if (firstScript && firstScript.parentNode) {
+          firstScript.parentNode.insertBefore(vudJs, firstScript);
+        }
+      }
+    }
 
     if (prenom && ville) {
       const titleEl = document.getElementById('success-title');
