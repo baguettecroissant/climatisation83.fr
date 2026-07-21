@@ -3,4 +3,4 @@ Allow: /
 Disallow: /confirmation
 Disallow: /confirmation/
 
-Sitemap: https://climatisation-var.fr/sitemap-index.xml
+Sitemap: https://climatisation83.fr/sitemap-index.xml
